@@ -29,28 +29,37 @@ module.exports = (grunt) ->
 
     clean:
       src: ['lib']
-      test: ['test_lib']
+      test: ['test_lib', '.tmp/storage']
 
     coffeelint:
       options:
         max_line_length:
-          value: 120
+          value: 130
       src:
         'src/**/*.coffee'
       test:
         'test/**/*.coffee'
 
+    copy:
+      test:
+        files: [
+          expand: true
+          cwd: 'test/expected'
+          src: ['**/*']
+          dest: '.tmp/storage'
+        ]
+
     mochaTest:
       test:
         options:
           reporter: 'spec'
-          timeout: 400000
+          timeout: 4000
           grep: process.env.GREP
         src: ['test_lib/*_test.js']
 
     env:
       coverage:
-        APP_SRV_COVERAGE: "../coverage/instrument"
+        APP_SRV_COVERAGE: "../coverage/instrument/"
 
     instrument:
       files: ["lib/**/*.js"]
@@ -76,20 +85,19 @@ module.exports = (grunt) ->
     coverage:
       options:
         thresholds:
-          statements: 89
-          branches: 50
+          statements: 90
+          branches: 90
           lines: 90
           functions: 90
 
-        root: "coverage"
+        dir: "coverage"
 
   grunt.registerTask('src', ['coffeelint:src', 'clean:src', 'coffee:src'])
-  grunt.registerTask('compile:test', ['coffeelint:test', 'clean:test', 'coffee:test'])
+  grunt.registerTask('compile:test', ['coffeelint:test', 'clean:test', 'coffee:test', 'copy:test'])
   grunt.registerTask('test', ['src', 'compile:test', 'mochaTest'])
-  grunt.registerTask('coverage', [
+  grunt.registerTask('do:coverage', [
     'src'
     'env:coverage'
-    'src'
     'compile:test'
     'instrument'
     'mochaTest'

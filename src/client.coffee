@@ -1,6 +1,34 @@
 
 assert = require 'assert'
 _ = require 'lodash'
+request = require 'request'
+crypto = require 'crypto'
+stream = require 'stream'
+path = require 'path'
+mime = require 'mime'
+
+
+utils =
+  sha1: (data) ->
+    crypto.createHash('sha1')
+      .update(data)
+      .digest('hex')
+
+  isStream: (obj) ->
+    obj instanceof stream.Readable
+
+genToken = (key, options, contentType, contentLength) ->
+  utils.sha1(_.compact([
+    options.cid,
+    options.key,
+    options.secret,
+    key,
+    contentType,
+    contentLength
+  ]).join(''))
+
+apiURL = (key, options) ->
+  options.url + '/' + options.cid + '/' + key
 
 class AmagingClient
   constructor: (options = {}) ->
@@ -10,8 +38,62 @@ class AmagingClient
     assert(options.secret, 'options.secret is mandatory.')
     @options = _.extend {}, options
 
-  get: (key) ->
+  get: (key, done) ->
+    request(apiURL(key, @options), done)
 
-  put: (key) ->
+  post: (key, headers, body, done) ->
+    mutlipart = false
+
+    if _.isString(headers)
+      headers = {}
+      headers['content-type'] = headers
+    else if utils.isStream(headers) or Buffer.isBuffer(headers)
+      headers = {}
+      headers['content-type'] = mime.lookup(key)
+
+    if _.isString(body) or Buffer.isBuffer(body)
+      headers['content-length'] = body.length
+    else
+      mutlipart = true
+
+    if mutlipart
+      return @postMultipart key, headers['content-type'], body, done
+
+    token = genToken(key, @options, headers['content-type'], headers['content-length'])
+    opt =
+      url: apiURL(key, @options)
+      body: body
+      headers: _.extend
+        'x-authentication': @options.key
+        'x-authentication-token': token
+      , headers
+    request.post opt, done
+
+  postMultipart: (key, contentType, stream, done) ->
+    token = genToken(key, @options)
+    opt =
+      url: apiURL(key, @options)
+      headers:
+        'x-authentication': @options.key
+        'x-authentication-token': token
+
+    req = request.post opt, done
+
+    form = req.form()
+    form.append('file', stream, {
+      contentType: contentType
+    })
+
+    return req
+
+  del: (key, done) ->
+    token = genToken(key, @options)
+    opt =
+      url: apiURL(key, @options)
+      headers:
+        'x-authentication': @options.key
+        'x-authentication-token': token
+    request.del opt, done
+
 
 module.exports = AmagingClient
