@@ -48,6 +48,8 @@ class AmagingClient
       headers = {}
       headers['content-type'] = headers
     else if utils.isStream(headers) or Buffer.isBuffer(headers)
+      done = body
+      body = headers
       headers = {}
       headers['content-type'] = mime.lookup(key)
 

@@ -152,10 +152,9 @@ describe 'Client::post', ->
       expect(res.statusCode).to.be.equals(200)
       done()
 
-  it 'Post an image with buffer content-type', (done) ->
+  it 'Post an image without content-type', (done) ->
     buffer = fs.readFileSync(path.join(__dirname, '..', '/test/bateau.jpg'))
-    buffContentType = fs.readFileSync(path.join(__dirname, '..', '/test/content-type.txt'))
-    client.post 'post/leBateaudeLoic.jpg', buffContentType, buffer, (err, res) ->
+    client.post 'post/newBoat.jpg', buffer, (err, res) ->
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(200)
       done()
