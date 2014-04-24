@@ -98,6 +98,25 @@ describe 'Client::get', ->
       expect(res.body).to.be.equals('{"json":true}')
       done()
 
+describe 'Client::head', ->
+  [client] = []
+  before ->
+    client = createAmagingClient()
+  ###
+    HEAD
+  ###
+  it 'Return file info', (done) ->
+    client.head 'get/file.json', (err, res) ->
+      expect(err).to.be.null
+      expect(res.statusCode).to.be.equals(200)
+      expect(res.headers['content-type']).to.be.equals('application/json')
+      done()
+
+  it 'Return 404 not found', (done) ->
+    client.head 'get/not_exists.json', (err, res) ->
+      expect(err).to.be.null
+      expect(res.statusCode).to.be.equals(404)
+      done()
 
 describe 'Client::post', ->
   [client] = []

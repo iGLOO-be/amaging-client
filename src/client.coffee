@@ -97,5 +97,10 @@ class AmagingClient
         'x-authentication-token': token
     request.del opt, done
 
+  head: (key, done) ->
+    opt =
+      url: apiURL(key, @options)
+    request.head opt, done
+
 
 module.exports = AmagingClient
