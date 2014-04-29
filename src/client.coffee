@@ -7,6 +7,7 @@ stream = require 'stream'
 path = require 'path'
 mime = require 'mime'
 
+UrlRepresentation = require './url-representation'
 
 utils =
   sha1: (data) ->
@@ -27,9 +28,6 @@ genToken = (key, options, contentType, contentLength) ->
     contentLength
   ]).join(''))
 
-apiURL = (key, options) ->
-  options.url + '/' + options.cid + '/' + key
-
 class AmagingClient
   constructor: (options = {}) ->
     assert(options.url, 'options.url is mandatory.')
@@ -39,7 +37,7 @@ class AmagingClient
     @options = _.extend {}, options
 
   get: (key, done) ->
-    request(apiURL(key, @options), done)
+    request(@urlStr(key), done)
 
   post: (key, headers, body, done) ->
     mutlipart = false
@@ -63,7 +61,7 @@ class AmagingClient
 
     token = genToken(key, @options, headers['content-type'], headers['content-length'])
     opt =
-      url: apiURL(key, @options)
+      url: @urlStr(key)
       body: body
       headers: _.extend
         'x-authentication': @options.key
@@ -71,10 +69,11 @@ class AmagingClient
       , headers
     request.post opt, done
 
+  # Private method
   postMultipart: (key, contentType, stream, done) ->
     token = genToken(key, @options)
     opt =
-      url: apiURL(key, @options)
+      url: @urlStr(key)
       headers:
         'x-authentication': @options.key
         'x-authentication-token': token
@@ -91,7 +90,7 @@ class AmagingClient
   del: (key, done) ->
     token = genToken(key, @options)
     opt =
-      url: apiURL(key, @options)
+      url: @urlStr(key)
       headers:
         'x-authentication': @options.key
         'x-authentication-token': token
@@ -99,8 +98,13 @@ class AmagingClient
 
   head: (key, done) ->
     opt =
-      url: apiURL(key, @options)
+      url: @urlStr(key)
     request.head opt, done
 
+  url: (key) ->
+    new UrlRepresentation(@options.url, @options.cid, key)
+
+  urlStr: (key) ->
+    @url(key).toString()
 
 module.exports = AmagingClient

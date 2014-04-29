@@ -206,3 +206,33 @@ describe 'Client::delete', ->
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(404)
       done()
+
+describe 'Client::url', ->
+  [client] = []
+  before ->
+    client = createAmagingClient()
+
+  ###
+    URL
+  ###
+  it 'Should return the media path', (done) ->
+    str = client.urlStr 'get/file.json'
+    expect(str).to.be.equals('http://localhost:8888/test/get/file.json')
+    done()
+
+  it 'Should return the media path with options', (done) ->
+    str = client
+      .url('get/file.json')
+      .options('100x100')
+      .options('negative')
+      .options('implode(1)')
+      .toString()
+    expect(str).to.be.equals('http://localhost:8888/test/100x100&negative&implode(1)&/get/file.json')
+    done()
+
+  it 'Should return the media path with NO options', (done) ->
+    str = client
+      .url('get/file.json')
+      .toString()
+    expect(str).to.be.equals('http://localhost:8888/test/get/file.json')
+    done()
