@@ -43,8 +43,9 @@ class AmagingClient
     mutlipart = false
 
     if _.isString(headers)
+      contentType = headers
       headers = {}
-      headers['content-type'] = headers
+      headers['content-type'] = contentType
     else if utils.isStream(headers) or Buffer.isBuffer(headers)
       done = body
       body = headers
