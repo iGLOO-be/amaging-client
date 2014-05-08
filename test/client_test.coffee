@@ -236,3 +236,67 @@ describe 'Client::url', ->
       .toString()
     expect(str).to.be.equals('http://localhost:8888/test/get/file.json')
     done()
+
+
+describe 'Policy', ->
+
+  describe 'Client::post', ->
+    [client] = []
+    before ->
+      client = createAmagingClient()
+
+    ###
+      POLICY::POST
+    ###
+    it 'Classic file post with expired policy', (done) ->
+      policyData = {"expiration": "2007-12-01"}
+      client.post 'post/policy.json', 'application/json', '{"post":true}', policyData, (err, res) ->
+        expect(err).to.be.null
+        expect(res.statusCode).to.be.equals(403)
+        done()
+
+    it 'Classic file post with valid expiration time policy', (done) ->
+      policyData = {"expiration": "2017-12-01"}
+      client.post 'post/policy.json', 'application/json', '{"post":true}', policyData, (err, res) ->
+        expect(err).to.be.null
+        expect(res.statusCode).to.be.equals(200)
+        done()
+
+    it 'Multipart file post with expired policy', (done) ->
+      policyData = {"expiration": "2008-12-01"}
+      stream = fs.createReadStream(path.join(__dirname, '..', '/test/expected/get/file.json'))
+      client.post 'post/multipartPolicy.json', 'content-type': 'application/json', stream, policyData, (err, res) ->
+        expect(err).to.be.null
+        expect(res.statusCode).to.be.equals(403)
+        done()
+
+    it 'Multipart file post with valid expiration time policy', (done) ->
+      policyData = {"expiration": "2019-12-01"}
+      stream = fs.createReadStream(path.join(__dirname, '..', '/test/expected/get/file.json'))
+      client.post 'post/multipartPolicy.json', 'content-type': 'application/json', stream, policyData, (err, res) ->
+        expect(err).to.be.null
+        expect(res.statusCode).to.be.equals(200)
+        done()
+
+
+  describe 'Client::delete', ->
+    [client] = []
+    before ->
+      client = createAmagingClient()
+
+    ###
+      POLICY::DEL
+    ###
+    it 'Delete a file with a expired policy', (done) ->
+      policyData = {"expiration": "2007-12-01"}
+      client.del 'delete/policy.json', policyData, (err, res) ->
+        expect(err).to.be.null
+        expect(res.statusCode).to.be.equals(403)
+        done()
+
+    it 'Delete a file with a valid policy', (done) ->
+      policyData = {"expiration": "2030-12-01"}
+      client.del 'delete/policy.json', policyData, (err, res) ->
+        expect(err).to.be.null
+        expect(res.statusCode).to.be.equals(200)
+        done()
