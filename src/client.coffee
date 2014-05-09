@@ -8,6 +8,7 @@ path = require 'path'
 mime = require 'mime'
 
 UrlRepresentation = require './url-representation'
+PolicyRepresentation = require './policy-representation'
 
 utils =
   sha1: (data) ->
@@ -171,10 +172,17 @@ class AmagingClient
       url: @urlStr(key)
     request.head opt, done
 
+  # URL Hepler
+
   url: (key) ->
     new UrlRepresentation(@options.url, @options.cid, key)
 
   urlStr: (key) ->
     @url(key).toString()
+
+  # Policy Helper
+
+  policy: (date, diff) ->
+    new PolicyRepresentation(date, diff, @options.secret)
 
 module.exports = AmagingClient

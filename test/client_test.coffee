@@ -141,7 +141,7 @@ describe 'Client::post', ->
   it 'Classic file post without content-type: ' + '"application/json"', (done) ->
     client.post 'post/classic2.json', '','{"post":true}', (err, res) ->
       expect(err).to.be.null
-      expect(res.statusCode).to.be.equals(200)
+      expect(res.statusCode).to.be.equals(403)
       done()
 
   it 'Classic file post with header: ' + 'contentType: "application/json"', (done) ->
@@ -300,3 +300,36 @@ describe 'Policy', ->
         expect(err).to.be.null
         expect(res.statusCode).to.be.equals(200)
         done()
+
+describe 'Policy Helper', ->
+
+  describe 'Client::policy', ->
+    [client] = []
+    before ->
+      client = createAmagingClient()
+
+    ###
+      POLICY::REPRESENTATION
+    ###
+    it 'Should return an object of the policy expiration in JSON', (done) ->
+      str = client
+        .policy('+1y')
+        .toJSON()
+      expect(str).to.be.a('object')
+      done()
+
+    it 'Should return the policy expiration in base64', (done) ->
+      str = client
+        .policy(new Date())
+        .toBase64()
+      expect(str).to.be.a('string')
+      done()
+
+    it 'Should return the complete policy in JSON', (done) ->
+      str = client
+        .policy(new Date(), '+5y')
+        .data('success', 'http://www.igloo.be')
+        .cond('start-with', 'test', 'user/eric/')
+        .toJSON()
+      expect(str).to.be.a('object')
+      done()
