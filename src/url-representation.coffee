@@ -11,9 +11,10 @@ class UrlRepresentation
     return @
 
   toString: =>
+    base = @_domain + '/' + @_cid + '/'
     if @_options.length
-      return @_domain + '/' + @_cid + '/' + (@_options.join('&') + '&/') + @_key
+      return base + (@_options.join('&') + '&/') + @_key
     else
-      return @_domain + '/' + @_cid + '/' + @_key
+      return base + @_key
 
 module.exports = UrlRepresentation
