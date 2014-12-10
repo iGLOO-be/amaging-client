@@ -23,13 +23,14 @@
     "grunt-mocha-test": "^0.10.2",
     "grunt-open": "^0.2.3",
     "grunt-release": "^0.7.0",
-    "igloo-amaging": "0.0.5",
+    "igloo-amaging": "0.0.8",
     "load-grunt-tasks": "^0.4.0"
   },
   "dependencies": {
+    "igloo-amaging-policy": "0.0.4",
     "lodash": "^2.4.1",
-    "request": "^2.34.0",
     "mime": "^1.2.11",
-    "moment": "^2.6.0"
+    "moment": "^2.6.0",
+    "request": "^2.34.0"
   }
 }

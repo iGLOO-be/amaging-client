@@ -8,7 +8,7 @@ path = require 'path'
 mime = require 'mime'
 
 UrlRepresentation = require './url-representation'
-PolicyRepresentation = require './policy-representation'
+PolicyFactory = require 'igloo-amaging-policy'
 
 utils =
   sha1: (data) ->
@@ -183,6 +183,8 @@ class AmagingClient
   # Policy Helper
 
   policy: (date, diff) ->
-    new PolicyRepresentation(date, diff, @options.secret)
+    unless @policyFactory
+      @policyFactory = new PolicyFactory(@options.secret)
+    @policyFactory.represent date, diff
 
 module.exports = AmagingClient
