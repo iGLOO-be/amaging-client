@@ -53,6 +53,14 @@ describe 'UrlRepresentation', ->
       )
       expect(str.toString()).to.be.equals('http://localhost:8888/test/get/file.json')
 
+    it 'Should return the media path', ->
+      str = new UrlRepresentation(
+        'http://localhost:8888/'
+        '/test'
+        'get/file.json'
+      )
+      expect(str.toString()).to.be.equals('http://localhost:8888/test/get/file.json')
+
   describe '::options()', ->
     it 'Should return the media path with options', ->
       str = new UrlRepresentation(

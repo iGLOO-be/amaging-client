@@ -1,5 +1,6 @@
 
 url = require 'url'
+urljoin = require 'url-join'
 
 class UrlRepresentation
   @parse: (str) ->
@@ -24,10 +25,10 @@ class UrlRepresentation
     return @
 
   toString: =>
-    base = @_host + '/' + @_cid + '/'
-    if @_options.length
-      return base + (@_options.join('&') + '&/') + @_key
-    else
-      return base + @_key
+    urljoin(
+      @_host + '/' + @_cid
+      (@_options.join('&') + '&') if @_options.length
+      @_key
+    )
 
 module.exports = UrlRepresentation
