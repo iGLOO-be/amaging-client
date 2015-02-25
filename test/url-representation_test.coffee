@@ -72,3 +72,29 @@ describe 'UrlRepresentation', ->
         .options('negative')
         .options('implode(1)')
       expect(str.toString()).to.be.equals('http://localhost:8888/test/100x100&negative&implode(1)&/get/file.json')
+
+  describe '::clearOptions()', ->
+    it 'Should clear all options', ->
+      str = new UrlRepresentation(
+        'http://localhost:8888'
+        'test'
+        'get/file.json'
+      )
+        .options('100x100')
+        .options('negative')
+        .options('implode(1)')
+
+      expect(str.toString()).to.be.equals('http://localhost:8888/test/100x100&negative&implode(1)&/get/file.json')
+
+      expect(str
+        .clearOptions()
+        .toString()
+      ).to.be.equals('http://localhost:8888/test/get/file.json')
+
+      expect(str
+        .clearOptions()
+        .options('100x100')
+        .options('negative')
+        .options('implode(1)')
+        .toString()
+      ).to.be.equals('http://localhost:8888/test/100x100&negative&implode(1)&/get/file.json')

@@ -24,6 +24,10 @@ class UrlRepresentation
     @_options = @_options.concat options
     return @
 
+  clearOptions: =>
+    @_options = []
+    return @
+
   toString: =>
     urljoin(
       @_host + '/' + @_cid
