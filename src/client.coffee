@@ -6,6 +6,7 @@ crypto = require 'crypto'
 stream = require 'stream'
 path = require 'path'
 mime = require 'mime'
+debug = require('debug')('amaging-client')
 
 UrlRepresentation = require './url-representation'
 PolicyFactory = require 'igloo-amaging-policy'
@@ -42,14 +43,20 @@ genToken = (key, options, contentType, contentLength) ->
   # Remove first '/'. It is always ignored by amaging
   key = key.replace(/^\/+/, '')
 
-  utils.sha1(_.compact([
+  str = _.compact([
     options.cid,
     options.key,
     options.secret,
     key,
     contentType,
     contentLength
-  ]).join(''))
+  ]).join('')
+
+  debug "Generate SHA token for string: #{str}"
+  hash = utils.sha1(str)
+  debug "Generated SHA token: #{hash}"
+
+  return hash
 
 class AmagingClient
   constructor: (options = {}) ->
@@ -59,11 +66,15 @@ class AmagingClient
     assert(options.secret, 'options.secret is mandatory.')
     @options = _.extend {}, options
 
+    debug 'Create client with configuration', @options
+
   get: (key, done) ->
     request(@urlStr(key), done)
 
   post: (key, headers, body, policy, done) ->
     mutlipart = false
+
+    debug "Begin POST for key #{key}"
 
     if _.isString(headers)
       contentType = headers
@@ -113,6 +124,8 @@ class AmagingClient
 
   # Private method
   postMultipart: (key, contentType, stream, policy, done) ->
+    debug "Begin MULTIPART POST for key #{key}"
+
     unless policy
       token = genToken(key, @options)
       opt =
@@ -148,6 +161,8 @@ class AmagingClient
       return req
 
   del: (key, policy, done) ->
+    debug "Begin DELETE for key #{key}"
+
     if _.isFunction(policy)
       done = policy
       policy = null
@@ -171,6 +186,8 @@ class AmagingClient
       request.del opt, done
 
   head: (key, done) ->
+    debug "Begin HEAD for key #{key}"
+
     opt =
       url: @urlStr(key)
     request.head opt, done

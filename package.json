@@ -28,6 +28,7 @@
     "load-grunt-tasks": "^3.1.0"
   },
   "dependencies": {
+    "debug": "^2.2.0",
     "igloo-amaging-policy": "0.1.1",
     "lodash": "^3.1.0",
     "mime": "^1.3.4",
