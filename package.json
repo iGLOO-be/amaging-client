@@ -6,7 +6,8 @@
     "registry": "http://npmregistry.igloo.be"
   },
   "scripts": {
-    "prepublish": "grunt clean && grunt src"
+    "prepublish": "grunt clean && grunt src",
+    "test": "grunt test"
   },
   "devDependencies": {
     "chai": "^3.4.1",

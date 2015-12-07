@@ -39,6 +39,9 @@ utils =
     }
 
 genToken = (key, options, contentType, contentLength) ->
+  # Remove first '/'. It is always ignored by amaging
+  key = key.replace(/^\/+/, '')
+
   utils.sha1(_.compact([
     options.cid,
     options.key,
