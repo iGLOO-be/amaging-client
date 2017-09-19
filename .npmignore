@@ -1,6 +1,4 @@
-/src
 /test
-/test_lib
 /.tmp
 /coverage
-Gruntfile.coffee
+/.nyc_output

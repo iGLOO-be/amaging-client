@@ -1,5 +1,5 @@
 node_modules
 /lib
-/test_lib
 /coverage
+/.nyc_output
 /.tmp
