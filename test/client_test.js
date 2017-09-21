@@ -6,7 +6,7 @@ const requireClient = () => require('../lib/client')
 const getClient = opt => new (requireClient())(opt)
 
 const createAmagingServer = function (done) {
-  const amaging = require('igloo-amaging')({
+  const amaging = require('@igloo-be/amaging')({
     customers: {
       test: {
         access: {

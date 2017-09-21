@@ -8,8 +8,10 @@
     "lint": "standard --env mocha"
   },
   "devDependencies": {
+    "@igloo-be/amaging": "^1.0.0",
     "chai": "^3.4.1",
     "chai-fs": "0.1.0",
+    "mocha": "^3.5.3",
     "nyc": "~11.0.2",
     "standard": "~10.0.2"
   },
