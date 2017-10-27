@@ -1,6 +1,6 @@
 {
   "name": "@igloo-be/amaging-client",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "main": "lib/client.js",
   "scripts": {
     "prepare-test": "rm -rf .tmp && mkdir -p .tmp/storage && cp -r test/expected/* ./.tmp/storage",
