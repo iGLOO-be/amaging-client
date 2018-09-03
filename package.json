@@ -7,6 +7,9 @@
     "test": "npm run prepare-test && nyc mocha",
     "lint": "standard --env mocha"
   },
+  "engines": {
+    "node": ">=6"
+  },
   "devDependencies": {
     "@igloo-be/amaging": "^1.0.0",
     "chai": "^3.4.1",
