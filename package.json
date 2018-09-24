@@ -11,18 +11,18 @@
     "node": ">=6"
   },
   "devDependencies": {
-    "@igloo-be/amaging": "^1.0.0",
-    "chai": "^3.4.1",
-    "chai-fs": "0.1.0",
-    "mocha": "^3.5.3",
-    "nyc": "~11.0.2",
-    "standard": "~10.0.2"
+    "@igloo-be/amaging": "^1.4.0",
+    "chai": "^4.1.2",
+    "chai-fs": "2.0.0",
+    "mocha": "^5.2.0",
+    "nyc": "~13.0.1",
+    "standard": "~12.0.1"
   },
   "dependencies": {
-    "debug": "^2.2.0",
-    "@igloo-be/amaging-policy": "^1.0.1",
-    "mime": "^1.3.4",
-    "request": "^2.67.0",
-    "url-join": "0.0.1"
+    "debug": "^4.0.1",
+    "@igloo-be/amaging-policy": "^3.0.0",
+    "mime": "^2.3.1",
+    "request": "^2.88.0",
+    "url-join": "4.0.0"
   }
 }

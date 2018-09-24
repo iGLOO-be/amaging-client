@@ -6,7 +6,7 @@ const requireClient = () => require('../lib/client')
 const getClient = opt => new (requireClient())(opt)
 
 const createAmagingServer = function (done) {
-  const amaging = require('@igloo-be/amaging')({
+  const amaging = require('@igloo-be/amaging').default({
     customers: {
       test: {
         access: {
@@ -45,9 +45,9 @@ chai.use(require('chai-fs'))
 
 let [amaging] = Array.from([])
 
-before(done => amaging = createAmagingServer(done))
+before(() => amaging = createAmagingServer(done))
 
-after(done => amaging.close(done))
+after (() => amaging.close(done))
 
 describe('Client', function () {
   let [client] = Array.from([])
@@ -80,14 +80,12 @@ describe('Client::get', function () {
   */
   it('Client is an object', () => expect(client).to.be.a('object'))
 
-  it('Get a file', done =>
-    client.get('get/file.json', function (err, res) {
-      expect(err).to.be.null
-      expect(res.statusCode).to.be.equals(200)
-      expect(res.body).to.be.equals('{"json":true}')
-      done()
-    })
-  )
+  it('Get a file', async () => {
+    const res = await client.get('get/file.json')
+    expect(err).to.be.null
+    expect(res.statusCode).to.be.equals(200)
+    expect(res.body).to.be.equals('{"json":true}')
+  })
 })
 
 describe('Client::head', function () {
@@ -96,7 +94,7 @@ describe('Client::head', function () {
   /*
     HEAD
   */
-  it('Return file info', done =>
+  it('Return file info', async () =>
     client.head('get/file.json', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(200)
@@ -105,7 +103,7 @@ describe('Client::head', function () {
     })
   )
 
-  it('Return 404 not found', done =>
+  it('Return 404 not found', async () =>
     client.head('get/not_exists.json', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(404)
@@ -121,7 +119,7 @@ describe('Client::post', function () {
     POST
   */
   // Classic upload
-  it('Classic file post with header: content-type: application/json', done =>
+  it.only('Classic file post with header: content-type: application/json', async () =>
     client.post('post/classic.json', {'content-type': 'application/json'}, '{"post":true}', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(200)
@@ -129,7 +127,7 @@ describe('Client::post', function () {
     })
   )
 
-  it('Classic file post with header: "application/json"', done =>
+  it('Classic file post with header: "application/json"', async () =>
     client.post('post/classic2.json', 'application/json', '{"post":true}', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(200)
@@ -137,7 +135,7 @@ describe('Client::post', function () {
     })
   )
 
-  it('Classic file post without content-type: "application/json"', done =>
+  it('Classic file post without content-type: "application/json"', async () =>
     client.post('post/classic2.json', '', '{"post":true}', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(403)
@@ -145,7 +143,7 @@ describe('Client::post', function () {
     })
   )
 
-  it('Classic file post with header: contentType: "application/json"', done =>
+  it('Classic file post with header: contentType: "application/json"', async () =>
     client.post('post/classic3.json', {contentType: 'application/json'}, '{"post":true}', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(403)
@@ -227,7 +225,7 @@ describe('Client::delete', function () {
   /*
     DELETE
   */
-  it('Delete a file', done =>
+  it('Delete a file', async () =>
     client.del('delete/rm.json', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(200)
@@ -235,7 +233,7 @@ describe('Client::delete', function () {
     })
   )
 
-  it('Delete a file that not exits', done =>
+  it('Delete a file that not exits', async () =>
     client.del('delete/not_exists.json', function (err, res) {
       expect(err).to.be.null
       expect(res.statusCode).to.be.equals(404)
@@ -350,40 +348,3 @@ describe('Policy', function () {
     })
   })
 })
-
-describe('Policy Helper', () =>
-
-  describe('Client::policy', function () {
-    let [client] = Array.from([])
-    before(() => client = createAmagingClient())
-
-    /*
-      POLICY::REPRESENTATION
-    */
-    it('Should return an object of the policy expiration in JSON', function (done) {
-      const str = client
-        .policy('+1y')
-        .toJSON()
-      expect(str).to.be.a('object')
-      done()
-    })
-
-    it('Should return the policy expiration in base64', function (done) {
-      const str = client
-        .policy(new Date())
-        .toBase64()
-      expect(str).to.be.a('string')
-      done()
-    })
-
-    it('Should return the complete policy in JSON', function (done) {
-      const str = client
-        .policy(new Date(), '+5y')
-        .data('success', 'http://www.igloo.be')
-        .cond('start-with', 'test', 'user/eric/')
-        .toJSON()
-      expect(str).to.be.a('object')
-      done()
-    })
-  })
-)

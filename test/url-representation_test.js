@@ -59,7 +59,7 @@ describe('UrlRepresentation', function () {
       return expect(str.toString()).to.be.equals('http://localhost:8888/test/get/file.json')
     })
 
-    it('Should return the media path', function () {
+    it('Should return the media path (cid with slash)', function () {
       const str = new UrlRepresentation(
         'http://localhost:8888/',
         '/test',
